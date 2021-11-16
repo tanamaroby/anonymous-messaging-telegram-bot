@@ -127,10 +127,10 @@ bot.command("iamhear", async (ctx) => {
                 ctx.reply("💡 Wakabu tip 💡\n\nAs a listener, your role is to understand what is being said and remove your own judgements and opinions. This may require you to reflect "
                 + "on what is being said and to ask questions.\n\nReflect on what has been said by paraphrasing. Words like 'What I'm hearing is...', and 'Sounds like you are saying...' "
                 + "are great ways to reflect back.");
-                ctx.reply("Okay 😄, I have successfully established connection between the two of you. Send message to one another by starting your message with the command /hear. " 
+                ctx.reply("Okay 😄, I have successfully established connection between the two of you.\n\nSend message to one another by starting your message with the command /hear. " 
                 + "\n\nFor example: /hear How are you doing? will send the message 'How are you doing?' to your recipient.\n\nUse /end to end the conversation");
-                ctx.telegram.sendMessage(hearnow[0].hearnow, "🎊 Someone is now here to support you 🎊\n\nYou can terminate the chat anytime by using the command \endchat. If anytime this person "
-                + "is making you feel unsafe, please do not hesitate to report them using \report.\n\nYou can talk to each other by starting your message with the command /hear. "
+                ctx.telegram.sendMessage(hearnow[0].hearnow, "🎊 Someone is now here to support you 🎊If anytime this person "
+                + "is making you feel unsafe, please do not hesitate to report them using /report.\n\nYou can talk to each other by starting your message with the command /hear. "
                 + "\n\nFor example: /hear I need help right now! will send the message 'I need help right now!' to your recipient.\n\nUse /end to end the conversation.");
             } else {
                 ctx.reply("You can't match with yourself 😢, please wait until someone picks up");
