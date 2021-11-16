@@ -129,8 +129,7 @@ bot.command("iamhear", async (ctx) => {
                 + "are great ways to reflect back.");
                 ctx.reply("Okay 😄, I have successfully established connection between the two of you.\n\nSend message to one another by starting your message with the command /hear. " 
                 + "\n\nFor example: /hear How are you doing? will send the message 'How are you doing?' to your recipient.\n\nUse /end to end the conversation");
-                ctx.telegram.sendMessage(hearnow[0].hearnow, "🎊 Someone is now here to support you 🎊If anytime this person "
-                + "is making you feel unsafe, please do not hesitate to report them using /report.\n\nYou can talk to each other by starting your message with the command /hear. "
+                ctx.telegram.sendMessage(hearnow[0].hearnow, "🎊 Someone is now here to support you 🎊\n\nYou can talk to each other by starting your message with the command /hear. "
                 + "\n\nFor example: /hear I need help right now! will send the message 'I need help right now!' to your recipient.\n\nUse /end to end the conversation.");
             } else {
                 ctx.reply("You can't match with yourself 😢, please wait until someone picks up");
