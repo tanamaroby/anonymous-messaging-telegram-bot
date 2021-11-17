@@ -20,8 +20,9 @@ async function hearnow(user) {
         var groupIds = "(" + groupIdsObjects.map(groupId => groupId.group_id).join(",") + ")";
         var groups = await users.findGroupIdNameMappingByGroupIdIn(groupIds);
         return createGroupsMenu(groups);
+    } else {
+        return [];
     }
-    return [];
 }
 
 async function getGroups(selection) {

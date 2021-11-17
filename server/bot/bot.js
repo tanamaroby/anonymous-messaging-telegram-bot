@@ -73,7 +73,7 @@ bot.command("hearnow", async (ctx) => {
             ctx.reply("Sorry but you are in the middle of a conversation right now. Please end the conversation first using /end before starting another one");
         } else {
             var groupsMenu = await hearnow.hearnow(ctx.message.from);
-            if (groupsMenu.length > 0) {
+            if (groupsMenu.reply_markup.inline_keyboard.length > 0) {
                 ctx.reply("Which group would you like me to match you with?", groupsMenu);
             } else {
                 ctx.reply("You are not registered to any group! Please use /register on your group before using this command");
