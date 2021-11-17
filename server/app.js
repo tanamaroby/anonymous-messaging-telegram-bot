@@ -20,6 +20,7 @@ app.use('/', indexRouter);
 
 // Prevent heroku from sleeping
 setInterval(function() {
+    console.log("Fetching the URL: " + url);
     fetch(url);
 }, 1200000);
 
