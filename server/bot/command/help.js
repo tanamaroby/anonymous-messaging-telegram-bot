@@ -5,6 +5,6 @@ const feature1 = "Wakabubot will perform check-in on groups twice a week on Wedn
 + "everyone registered in the group has rated how they feel. 💡 You can manually trigger this function by using the command /checkin.";
 
 const feature2 = "Wakabubot allows group members to talk to each other anonymously 🐱‍👤. This feature is only available in private message and once you have registered yourself in a group. "
-+ "You will have to /start the bot in private message and create your profile using /setup if you have not done so 😄.";
++ "You will have to /start the bot in private message and create your profile using /setup if you have not done so 😄. After which, you can use the command /hearnow to talk to members from your group anonymously.";
 
 export default intro + "\n\n" + feature1 + "\n\n" + feature2;

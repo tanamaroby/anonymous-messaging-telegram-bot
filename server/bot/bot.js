@@ -131,7 +131,7 @@ bot.action(constants.I_AM_AVAILABLE, async (ctx) => {
             ctx.reply("Okay 😄, I have successfully established connection between the two of you.\n\nSend message to one another by starting your message with the command /hear. " 
             + "\n\nFor example: /hear How are you doing? will send the message 'How are you doing?' to your recipient.\n\nUse /end to end the conversation");
             ctx.telegram.sendMessage(hearnow[0].hearnow, "🎊 Someone is now here to support you 🎊\n\nYou can talk to each other by starting your message with the command /hear. "
-            + "\n\nFor example: /hear I need help right now! will send the message 'I need help right now!' to your recipient.\n\nUse /end to end the conversation.");
+            + "\n\nFor example: /hear I want to talk for a little bit will send the message 'I want to talk for a little bit' to your recipient.\n\nUse /end to end the conversation.");
         } else {
             ctx.reply("You can't match with yourself 😢, please wait until someone picks up");
         }
