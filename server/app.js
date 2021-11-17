@@ -3,7 +3,6 @@ import "core-js/stable";
 import "regenerator-runtime/runtime";
 import "./loadEnv";
 import "./bot/bot";
-import wakeup from './wakeup'
 
 import express from 'express';
 import logger from 'morgan';
@@ -19,6 +18,26 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use('/', indexRouter);
+
+const wakeup = (url, interval = 25, callback) => {
+    const milliseconds = interval * 60000;
+    setTimeout(() => {
+        try {
+            console.log("setTimeout has been called.");
+            fetch(url).then(() => console.log("Fetching " + url));
+        } catch (err) {
+            console.log("Error fetching " + url + ", will try again in " + interval + " minutes");
+        } finally {
+            try {
+                callback();
+            } catch (err) {
+                callback ? console.log("Callback failed: ") : null;
+            } finally {
+                return wakeup(url, interval, callback);
+            }
+        }
+    }, milliseconds);
+}
 
 app.listen(port, () => {
     wakeup(url);
