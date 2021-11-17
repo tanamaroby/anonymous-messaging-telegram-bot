@@ -9,4 +9,4 @@ const feature2 = "2. Wakabubot allows group members to talk to each other anonym
 
 const feature3 = "3 Wakabubot allows you to create a profile for the bot to better identify you and to provide more relevant tips. You can use the command /setup in private message to create your profile.";
 
-export default intro + "\n\n" + feature1 + "\n\n" + feature2;
+export default intro + "\n\n" + feature1 + "\n\n" + feature2 + "\n\n" + feature3;
