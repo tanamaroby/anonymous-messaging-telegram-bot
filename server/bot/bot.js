@@ -1,5 +1,5 @@
 import { Telegraf, Markup } from 'telegraf';
-import { Gender, PreferredGender } from "./constants";
+import constants from "./constants";
 
 // Import commands
 import start from "./command/start";
@@ -11,15 +11,15 @@ import iamhear from './command/iamhear';
 
 // Bot buttons
 const genderMenu = Markup.inlineKeyboard([
-    Markup.button.callback('Male', Gender.MALE),
-    Markup.button.callback('Female', Gender.FEMALE),
-    Markup.button.callback('Anyone', Gender.ANYONE)
+    Markup.button.callback('Male', constants.Gender.MALE),
+    Markup.button.callback('Female', constants.Gender.FEMALE),
+    Markup.button.callback('Anyone', constants.Gender.ANYONE)
 ]);
 
 const preferredGenderMenu = Markup.inlineKeyboard([
-    Markup.button.callback('Male', PreferredGender.MALE),
-    Markup.button.callback('Female', PreferredGender.FEMALE),
-    Markup.button.callback('Anyone', PreferredGender.ANYONE)
+    Markup.button.callback('Male', constants.PreferredGender.MALE),
+    Markup.button.callback('Female', constants.PreferredGender.FEMALE),
+    Markup.button.callback('Anyone', constants.PreferredGender.ANYONE)
 ])
 
 // Bot commands
@@ -45,7 +45,7 @@ bot.command('setup', (ctx) => {
     }
 });
 
-bot.action([Gender.MALE, Gender.FEMALE, Gender.ANYONE], async (ctx) => {
+bot.action([constants.Gender.MALE, constants.Gender.FEMALE, constants.Gender.ANYONE], async (ctx) => {
     await setup.setupGender(ctx.callbackQuery.from, ctx.callbackQuery.data);
     ctx.answerCbQuery();
     ctx.editMessageText("You have selected " + ctx.callbackQuery.data + " as your gender");   
@@ -53,7 +53,7 @@ bot.action([Gender.MALE, Gender.FEMALE, Gender.ANYONE], async (ctx) => {
     + "can chat with you privately and anonymously. What gender would you prefer this listening ear be?", preferredGenderMenu);
 });
 
-bot.action([PreferredGender.MALE, PreferredGender.FEMALE, PreferredGender.ANYONE], async (ctx) => {
+bot.action([constants.PreferredGender.MALE, constants.PreferredGender.FEMALE, constants.PreferredGender.ANYONE], async (ctx) => {
     await setup.setupPreferredGender(ctx.callbackQuery.from, ctx.callbackQuery.data);
     ctx.answerCbQuery();
     ctx.editMessageText("You stated that you " + ctx.callbackQuery.data + " for a listening ear. Note that, in the event only one person is available, we will match you with that "
@@ -78,19 +78,13 @@ bot.command("hearnow", async (ctx) => {
     }
 });
 
-bot.command("cancelhearnow", async (ctx) => {
-    let name = ctx.message.from.first_name; 
-    if (ctx.message.chat.type == 'group' || ctx.message.chat.type == "supergroup") {
-        ctx.reply("🙇 Apologies " + name + " but you have to message me privately for this command!");
-    } else if (ctx.message.chat.type == "private") {
-        if (await hearnow.isHearnow(ctx.message.from)) {
-            await hearnow.cancelHearnow(ctx.message.from);
-            ctx.reply("I have cancelled your hearnow request. Feel free to use my services again 😀!");
-        } else {
-            ctx.reply("You do not have any hearnow request pending right now. You can create a hearnow request using /hearnow command.");
-        }
-    }
-})
+const cancelHearnowMenu = Markup.inlineKeyboard([
+    Markup.button.callback('Cancel', constants.CANCEL_HEARNOW),
+])
+
+const iamhearMenu = Markup.inlineKeyboard([
+    Markup.button.callback('I am available!', constants.I_AM_AVAILABLE),
+])
 
 bot.action(/^-?\d+\.?\d*$/, async (ctx) => {
     var userIds = await hearnow.getGroups(ctx.callbackQuery.data);
@@ -102,38 +96,44 @@ bot.action(/^-?\d+\.?\d*$/, async (ctx) => {
         talking.push(elem.hearnow);
     })
     ctx.answerCbQuery();
-    ctx.editMessageText("Okay I got it 😁. I will now contact the group members based on your preferences. Please be patient while we wait for them to respond.");
+    ctx.editMessageText("Okay I got it 😁. I will now contact the group members based on your preferences. Please be patient while we wait for them to respond.", cancelHearnowMenu);
     userIds.forEach(userId => {
         if (userId != ctx.callbackQuery.from.id && !talking.includes(userId)) {
-            bot.telegram.sendMessage(userId, "👋 Hi! Someone needs a listening ear from your group. Would you like to give them some support by chatting with them anonymously? "
-            + "If you do, please type /iamhear.");
+            bot.telegram.sendMessage(userId, "👋 Hi! Someone needs a listening ear from your group. Would you like to give them some support by chatting with them anonymously?", iamhearMenu);
         }
     })
 });
 
-bot.command("iamhear", async (ctx) => {
-    let name = ctx.message.from.first_name; 
-    if (ctx.message.chat.type == 'group' || ctx.message.chat.type == "supergroup") {
-        ctx.reply("🙇 Apologies " + name + " but you have to message me privately for this command!");
-    } else if (ctx.message.chat.type == "private") {
-        var hearnow = await iamhear.findHearnow(ctx.message.from);
-        if (await iamhear.isTalking(ctx.message.from)) { 
-            ctx.reply("Sorry but you are in the middle of a conversation right now. Please end the conversation first using /end before starting another one");
-        } else if (hearnow.length <= 0) {
-            ctx.reply("Sorry but no one is looking for help right now. Thanks for the initiative and we will inform you once someone needs help 😁.");
+bot.action(constants.CANCEL_HEARNOW, async (ctx) => {
+    ctx.answerCbQuery();
+    if (await hearnow.isHearnow(ctx.callbackQuery.from)) {
+        await hearnow.cancelHearnow(ctx.callbackQuery.from);
+        ctx.editMessageText("I have cancelled your hearnow request. Feel free to use my services again 😀!");
+    } else {
+        ctx.reply("You do not have any hearnow request pending right now.");
+    }
+})
+
+bot.action(constants.I_AM_AVAILABLE, async (ctx) => {
+    ctx.answerCbQuery();
+    var hearnow = await iamhear.findHearnow(ctx.callbackQuery.from);
+    if (await iamhear.isTalking(ctx.callbackQuery.from)) { 
+        ctx.reply("Sorry but you are in the middle of a conversation right now. Please end the conversation first using /end before starting another one");
+    } else if (hearnow.length <= 0) {
+        ctx.reply("Sorry but no one in your group is looking for help right now. Thanks for the initiative and we will inform you once someone needs help 😁.");
+    } else {
+        if (ctx.callbackQuery.from.id != hearnow[0].hearnow) {
+            await iamhear.assignIamhear(ctx.callbackQuery.from.id, hearnow[0]);
+            ctx.editMessageText("Thank you! I will try to connect the two of you as fast as possible!");
+            ctx.reply("💡 Wakabu tip 💡\n\nAs a listener, your role is to understand what is being said and remove your own judgements and opinions. This may require you to reflect "
+            + "on what is being said and to ask questions.\n\nReflect on what has been said by paraphrasing. Words like 'What I'm hearing is...', and 'Sounds like you are saying...' "
+            + "are great ways to reflect back.");
+            ctx.reply("Okay 😄, I have successfully established connection between the two of you.\n\nSend message to one another by starting your message with the command /hear. " 
+            + "\n\nFor example: /hear How are you doing? will send the message 'How are you doing?' to your recipient.\n\nUse /end to end the conversation");
+            ctx.telegram.sendMessage(hearnow[0].hearnow, "🎊 Someone is now here to support you 🎊\n\nYou can talk to each other by starting your message with the command /hear. "
+            + "\n\nFor example: /hear I need help right now! will send the message 'I need help right now!' to your recipient.\n\nUse /end to end the conversation.");
         } else {
-            if (ctx.message.from.id != hearnow[0].hearnow) {
-                await iamhear.assignIamhear(ctx.message.from.id, hearnow[0]);
-                ctx.reply("💡 Wakabu tip 💡\n\nAs a listener, your role is to understand what is being said and remove your own judgements and opinions. This may require you to reflect "
-                + "on what is being said and to ask questions.\n\nReflect on what has been said by paraphrasing. Words like 'What I'm hearing is...', and 'Sounds like you are saying...' "
-                + "are great ways to reflect back.");
-                ctx.reply("Okay 😄, I have successfully established connection between the two of you.\n\nSend message to one another by starting your message with the command /hear. " 
-                + "\n\nFor example: /hear How are you doing? will send the message 'How are you doing?' to your recipient.\n\nUse /end to end the conversation");
-                ctx.telegram.sendMessage(hearnow[0].hearnow, "🎊 Someone is now here to support you 🎊\n\nYou can talk to each other by starting your message with the command /hear. "
-                + "\n\nFor example: /hear I need help right now! will send the message 'I need help right now!' to your recipient.\n\nUse /end to end the conversation.");
-            } else {
-                ctx.reply("You can't match with yourself 😢, please wait until someone picks up");
-            }
+            ctx.reply("You can't match with yourself 😢, please wait until someone picks up");
         }
     }
 })

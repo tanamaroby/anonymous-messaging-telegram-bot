@@ -1,8 +1,12 @@
 import users from "../../services/users";
 
 async function findHearnow(user) {
-    var query = "(" + (await users.findGroupByUserId(user.id)).map(groupId => groupId.group_id).join(",") + ")";
-    var result = await users.getHearnowByGroupIdIn(query);
+    var recipients = await users.findGroupByUserId(user.id);
+    var result = [];
+    if (recipients.length > 0) {
+        var query = "(" + recipients.map(groupId => groupId.group_id).join(",") + ")";
+        result = await users.getHearnowByGroupIdIn(query);
+    }
     return result;
 }
 
