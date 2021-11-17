@@ -26,7 +26,7 @@ const preferredGenderMenu = Markup.inlineKeyboard([
 export const bot = new Telegraf(process.env.BOT_TOKEN);
 bot.start((ctx) => ctx.reply(start));
 bot.help((ctx) => ctx.reply(help));
-bot.command('register', async (ctx) => {
+bot.command('hellobot', async (ctx) => {
     let name = ctx.message.from.first_name; 
     if (ctx.message.chat.type == 'group' || ctx.message.chat.type == "supergroup") {
         const response = await register.register(ctx.message.from, ctx.message.chat);
@@ -76,7 +76,7 @@ bot.command("hearnow", async (ctx) => {
             if (groupsMenu.reply_markup.inline_keyboard.length > 0) {
                 ctx.reply("Which group would you like me to match you with?", groupsMenu);
             } else {
-                ctx.reply("You are not registered to any group! Please use /register on your group before using this command");
+                ctx.reply("You are not registered to any group! Please use /hellobot on your group before using this command");
             }
         }
     }
