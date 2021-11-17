@@ -22,6 +22,6 @@ app.use('/', indexRouter);
 setInterval(function() {
     console.log("Fetching the URL: " + url);
     fetch(url);
-}, 1200000);
+}, 300000);
 
 export default app;

@@ -69,11 +69,15 @@ bot.command("hearnow", async (ctx) => {
     } else if (ctx.message.chat.type == "private") {
         if (await hearnow.isHearnow(ctx.message.from)) {
             ctx.reply("Sorry but you have already initiated the hearnow procedure. Please wait while we try out best to match you with someone 😁");
-        } else if (await iamhear.isTalking(ctx.message.from)) {
+        } else if (await iamhear.isTalking(ctx.message.from)) {``
             ctx.reply("Sorry but you are in the middle of a conversation right now. Please end the conversation first using /end before starting another one");
         } else {
             var groupsMenu = await hearnow.hearnow(ctx.message.from);
-            ctx.reply("Which group would you like me to match you with?", groupsMenu);
+            if (groupsMenu.length > 0) {
+                ctx.reply("Which group would you like me to match you with?", groupsMenu);
+            } else {
+                ctx.reply("You are not registered to any group! Please use /register on your group before using this command");
+            }
         }
     }
 });
@@ -150,7 +154,7 @@ bot.command("hear", async (ctx) => {
             var id = object.hearnow == ctx.message.from.id ? object.iamhear : object.hearnow;
             ctx.telegram.sendMessage(id, "🗣️: " + ctx.message.text.split(" ").slice(1).join(" "));
         } else {
-            ctx.reply("🙏 Sorry but you are not connected to anyone right now. Use the command /iamhear if anyone is looking for help. You can also use /hearnow to connect with a listening ear.");
+            ctx.reply("🙏 Sorry but you are not connected to anyone right now. Please use /hearnow to connect with a listening ear.");
         }
     }
 });
@@ -165,7 +169,7 @@ bot.command("end", async (ctx) => {
             ctx.telegram.sendMessage(result.hearnow, "The conversation has ended 😌. I hope that the experience has been positive for you and feel free to use Wakabubot services again 👋!");
             ctx.telegram.sendMessage(result.iamhear, "The conversation has ended 😌. I hope that you are able to help someone and feel free to use Wakabubot services again 👋!");
         } else {
-            ctx.reply("You are not in a conversation right now ☹️. Feel free to chat using /hearnow to seek help, or using /iamhear to offer a listening ear and support.");
+            ctx.reply("You are not in a conversation right now ☹️. Feel free to chat using /hearnow to find someone to chat with from your group.");
         }
     }
 });

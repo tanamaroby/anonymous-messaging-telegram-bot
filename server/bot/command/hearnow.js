@@ -16,9 +16,12 @@ async function isHearnow(user) {
 async function hearnow(user) {
     var userId = user.id;
     var groupIdsObjects = await users.findGroupByUserId(userId);
-    var groupIds = "(" + groupIdsObjects.map(groupId => groupId.group_id).join(",") + ")";
-    var groups = await users.findGroupIdNameMappingByGroupIdIn(groupIds);
-    return createGroupsMenu(groups);
+    if (groupIdsObjects.length > 0) {
+        var groupIds = "(" + groupIdsObjects.map(groupId => groupId.group_id).join(",") + ")";
+        var groups = await users.findGroupIdNameMappingByGroupIdIn(groupIds);
+        return createGroupsMenu(groups);
+    }
+    return [];
 }
 
 async function getGroups(selection) {
