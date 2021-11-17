@@ -7,6 +7,6 @@ const feature1 = "1. Wakabubot will perform check-in on groups twice a week on W
 const feature2 = "2. Wakabubot allows group members to talk to each other anonymously 🐱‍👤. This feature is only available in private message and once you have registered yourself in a group using /hellobot. "
 + "You will have to /start the bot in private message too 😄. After which, you can use the command /hearnow to talk to members from your group anonymously.";
 
-const feature3 = "3 Wakabubot allows you to create a profile for the bot to better identify you and to provide more relevant tips. You can use the command /setup in private message to create your profile.";
+const feature3 = "3. Wakabubot allows you to create a profile for the bot to better identify you and to provide more relevant tips. You can use the command /setup in private message to create your profile.";
 
 export default intro + "\n\n" + feature1 + "\n\n" + feature2 + "\n\n" + feature3;
