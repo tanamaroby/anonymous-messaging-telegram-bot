@@ -103,7 +103,7 @@ bot.action(/^-?\d+\.?\d*$/, async (ctx) => {
     ctx.editMessageText("Okay I got it 😁. I will now contact the group members based on your preferences. Please be patient while we wait for them to respond.", cancelHearnowMenu);
     userIds.forEach(userId => {
         if (userId != ctx.callbackQuery.from.id && !talking.includes(userId)) {
-            bot.telegram.sendMessage(userId, "👋 Hi! Someone needs a listening ear from your group. Would you like to give them some support by chatting with them anonymously?", iamhearMenu)
+            bot.telegram.sendMessage(userId, "👋 Hi! Someone needs a listening ear from your group. Would you like to give them some support by chatting with them anonymously?\n\nKeep in mine this will cancel any hearnow request you have.", iamhearMenu)
             .catch(err => console.log("Unable to send message to the specified user ID for hearnow blast: " + err));
         }
     })
@@ -127,15 +127,25 @@ bot.action(constants.I_AM_AVAILABLE, async (ctx) => {
     } else if (hearnow.length <= 0) {
         ctx.reply("Sorry but no one in your group is looking for help right now. Thanks for the initiative and we will inform you once someone needs help 😁.");
     } else {
-        if (ctx.callbackQuery.from.id != hearnow[0].hearnow) {
-            await iamhear.assignIamhear(ctx.callbackQuery.from.id, hearnow[0]).catch(err => console.log("Unable to assign I am hear: " + err));
+        var length = hearnow.length;
+        var hearnowId = null;
+        for (let i = 0; i < length; i ++) { 
+            if (ctx.callbackQuery.from.id != hearnow[i].hearnow) {
+                hearnowId = hearnow[i].hearnow;
+                break;
+            }
+        }
+        if (hearnowId == null) {
+            ctx.reply("Sorry but the hearnow request might have been taken up by someone!");
+        } else if (ctx.callbackQuery.from.id != hearnowId) {
+            await iamhear.assignIamhear(ctx.callbackQuery.from.id, hearnowId).catch(err => console.log("Unable to assign I am hear: " + err));
             ctx.editMessageText("Thank you! I will try to connect the two of you as fast as possible!");
             ctx.reply("💡 Wakabu tip 💡\n\nAs a listener, your role is to understand what is being said and remove your own judgements and opinions. This may require you to reflect "
             + "on what is being said and to ask questions.\n\nReflect on what has been said by paraphrasing. Words like 'What I'm hearing is...', and 'Sounds like you are saying...' "
             + "are great ways to reflect back.");
             ctx.reply("Okay 😄, I have successfully established connection between the two of you.\n\nSend message to one another by starting your message with the command /hear. " 
             + "\n\nFor example: /hear How are you doing? will send the message 'How are you doing?' to your recipient.\n\nUse /end to end the conversation");
-            ctx.telegram.sendMessage(hearnow[0].hearnow, "🎊 Someone is now here to support you 🎊\n\nYou can talk to each other by starting your message with the command /hear. "
+            ctx.telegram.sendMessage(hearnowId, "🎊 Someone is now here to support you 🎊\n\nYou can talk to each other by starting your message with the command /hear. "
             + "\n\nFor example: /hear I want to talk for a little bit will send the message 'I want to talk for a little bit' to your recipient.\n\nUse /end to end the conversation.")
             .catch(err => console.log("Unable to send message to the hearnow recipient: " + err));
         } else {

@@ -11,9 +11,9 @@ async function findHearnow(user) {
 }
 
 async function assignIamhear(iamhear, hearnow) {
-    var hearnowId = hearnow.hearnow;
-    await users.deleteHearnow(hearnow.hearnow);
-    await users.insertIAmHear(hearnowId, iamhear);
+    await users.deleteHearnow(hearnow);
+    await users.deleteHearnow(iamhear);
+    await users.insertIAmHear(hearnow, iamhear);
 }
 
 async function getIamhear(user) {
