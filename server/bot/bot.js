@@ -210,7 +210,7 @@ bot.action(/^-?\d+\.?\d*$/, async (ctx) => {
         talking.push(elem.hearnow);
     })
     ctx.answerCbQuery();
-    ctx.editMessageText("Okay I got it 😁. I will now contact the group members based on your preferences. Please be patient while we wait for them to respond.");
+    ctx.editMessageText("I will now contact the group members based on your preferences. Please be patient while we wait for them to respond.");
     userIds.forEach(userId => {
         if (userId != ctx.callbackQuery.from.id && !talking.includes(userId)) {
             bot.telegram.sendMessage(userId, "👋 Hi! Someone needs a listening ear from " + groupName.group_name + ". Would you like to give them some support by chatting with them anonymously?\n\nKeep in mine this will cancel any hearnow request you have.", iamhearMenu)
