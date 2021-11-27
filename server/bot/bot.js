@@ -143,10 +143,8 @@ bot.action(constants.I_AM_AVAILABLE, async (ctx) => {
             ctx.reply("💡 Wakabu tip 💡\n\nAs a listener, your role is to understand what is being said and remove your own judgements and opinions. This may require you to reflect "
             + "on what is being said and to ask questions.\n\nReflect on what has been said by paraphrasing. Words like 'What I'm hearing is...', and 'Sounds like you are saying...' "
             + "are great ways to reflect back.");
-            ctx.reply("Okay 😄, I have successfully established connection between the two of you.\n\nSend message to one another by starting your message with the command /hear. " 
-            + "\n\nFor example: /hear How are you doing? will send the message 'How are you doing?' to your recipient.\n\nUse /end to end the conversation");
-            ctx.telegram.sendMessage(hearnowId, "🎊 Someone is now here to support you 🎊\n\nYou can talk to each other by starting your message with the command /hear. "
-            + "\n\nFor example: /hear I want to talk for a little bit will send the message 'I want to talk for a little bit' to your recipient.\n\nUse /end to end the conversation.")
+            ctx.reply("Okay 😄, I have successfully established connection between the two of you.\n\nYou can now send messages to one another and use /end if you want to end the conversation.");
+            ctx.telegram.sendMessage(hearnowId, "Someone is here to talk to you\n\nYou can now send messages to one another and use /end if you want to end the conversation.")
             .catch(err => console.log("Unable to send message to the hearnow recipient: " + err));
         } else {
             ctx.reply("You can't match with yourself 😢, please wait until someone picks up");
