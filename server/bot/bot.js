@@ -56,7 +56,7 @@ bot.command("hearnow", async (ctx) => {
         ctx.reply("🙇 Apologies " + name + " but you have to message me privately for this command!");
     } else if (ctx.message.chat.type == "private") {
         if (await hearnow.isHearnow(ctx.message.from).catch(err => console.log("Unable to get check if the user has initiated hearnow: " + err))) {
-            ctx.reply("Sorry but you have already initiated the hearnow procedure. Please wait while we try out best to match you with someone 😁");
+            ctx.reply("Sorry but you have already initiated the hearnow procedure. Give us a moment while we try out best to match you with someone");
         } else if (await iamhear.isTalking(ctx.message.from).catch(err => console.log("Unable to check if the user is talking: " + err))) {``
             ctx.reply("Sorry but you are in the middle of a conversation right now. Please end the conversation first using /end before starting another one");
         } else {
@@ -77,7 +77,7 @@ bot.command("cancelhearnow", async (ctx) => {
     } else if (ctx.message.chat.type == "private") {
         if (await hearnow.isHearnow(ctx.message.from).catch(err => console.log("Unable to check if the user is currently in hearnow procedure: " + err))) {
             await hearnow.cancelHearnow(ctx.message.from).catch(err => console.log("Unable to cancel hearnow process: " + err));
-            ctx.reply("I have cancelled your hearnow request. Feel free to use my services again 😀!");
+            ctx.reply("I have cancelled your hearnow request.");
         } else {
             ctx.reply("You do not have any hearnow request pending right now.");
         }
@@ -91,12 +91,12 @@ bot.command("end", async (ctx) => {
     } else if (ctx.message.chat.type == "private") {
         if (await iamhear.isTalking(ctx.message.from).catch(err => console.log("Unable to check who is talking for end function: " + err))) {
             var result = await iamhear.endConversation(ctx.message.from).catch(err => console.log("Unable to end conversation: " + err));
-            ctx.telegram.sendMessage(result.hearnow, "The conversation has ended 😌. I hope that the experience has been positive for you and feel free to use Wakabubot services again 👋!")
+            ctx.telegram.sendMessage(result.hearnow, "The conversation has ended. I hope that the experience has been positive for you.")
             .catch(err => console.log("Unable to send message to hearnow recipient for ending conversation: " + err));
-            ctx.telegram.sendMessage(result.iamhear, "The conversation has ended 😌. I hope that you are able to help someone and feel free to use Wakabubot services again 👋!")
+            ctx.telegram.sendMessage(result.iamhear, "The conversation has ended. Thank you for giving a listening ear.")
             .catch(err => console.log("Unable to send message to iamhear recipient for ending conversation: " + err));
         } else {
-            ctx.reply("You are not in a conversation right now ☹️. Feel free to chat using /hearnow to find someone to chat with from your group.");
+            ctx.reply("You are not in a conversation right now. Feel free to chat using /hearnow to find someone to chat with from your group.");
         }
     }
 });
@@ -104,7 +104,7 @@ bot.command("end", async (ctx) => {
 bot.command("checkin", async (ctx) => {
     let name = ctx.message.from.first_name; 
     if (ctx.message.chat.type == 'group' || ctx.message.chat.type == "supergroup") {
-        var question = "How are you feeling 🤔"
+        var question = "How are you feeling?"
         var answers = [
             "😁 Super awesome",
             "😀 Pretty good",
@@ -122,8 +122,8 @@ bot.action([constants.Gender.MALE, constants.Gender.FEMALE, constants.Gender.ANY
     await setup.setupGender(ctx.callbackQuery.from, ctx.callbackQuery.data).catch(err => console.log("Unable to setup gender error: " + err));
     ctx.answerCbQuery();
     ctx.editMessageText("You have selected " + ctx.callbackQuery.data + " as your gender");   
-    ctx.reply("When you are in distress 🔊, I will notify your group chat members anonymously that someone needs a listening ear. If a person is available to be a listening ear, they "
-    + "can chat with you privately and anonymously. What gender would you prefer this listening ear be?", preferredGenderMenu);
+    ctx.reply("When you use the command /hearnow, I will send anonymous conversation request to all your group members so that they "
+    + "can chat with you privately and anonymously if they are available. What gender would you prefer this listening ear be?", preferredGenderMenu);
 });
 
 bot.action([constants.PreferredGender.MALE, constants.PreferredGender.FEMALE, constants.PreferredGender.ANYONE], async (ctx) => {
@@ -131,8 +131,7 @@ bot.action([constants.PreferredGender.MALE, constants.PreferredGender.FEMALE, co
     ctx.answerCbQuery();
     ctx.editMessageText("You stated that you " + ctx.callbackQuery.data + " for a listening ear. Note that, in the event only one person is available, we will match you with that "
     + "person. You will be notified of their gender and have the option to terminate the chat.");
-    ctx.reply("Thanks for setting up your profile! I can help you with:\n\n🔊 I am in distress. I need someone /hearnow. When in distress, I will notify your registered group chat members anonymously that someone needs a "
-    + "listening ear. I'll provide tips to ensure safe and empathetic support is given.");
+    ctx.reply("Thanks for setting up your profile! Feel free to use the /hearnow command to chat with someone from your registered groups.");
 });
 
 bot.action(constants.I_AM_AVAILABLE, async (ctx) => {
@@ -159,7 +158,7 @@ bot.action(constants.I_AM_AVAILABLE, async (ctx) => {
             ctx.reply("💡 Wakabu tip 💡\n\nAs a listener, your role is to understand what is being said and remove your own judgements and opinions. This may require you to reflect "
             + "on what is being said and to ask questions.\n\nReflect on what has been said by paraphrasing. Words like 'What I'm hearing is...', and 'Sounds like you are saying...' "
             + "are great ways to reflect back.");
-            ctx.reply("Okay 😄, I have successfully established connection between the two of you.\n\nYou can now send messages to one another and use /end if you want to end the conversation.");
+            ctx.reply("I have successfully established connection between the two of you.\n\nYou can now send messages to one another and use /end if you want to end the conversation.");
             ctx.telegram.sendMessage(hearnowId, "Someone is here to talk to you\n\nYou can now send messages to one another and use /end if you want to end the conversation.")
             .catch(err => console.log("Unable to send message to the hearnow recipient: " + err));
         } else {

@@ -25,7 +25,7 @@ setInterval(async function() {
     console.log("Fetching the URL: " + url);
      axios.get(url).then(res => {
          console.log(res.data);
-     });
+     }).catch(console.log("Unable to fetch the website's URL"));
 }, 300000);
 
 export default app;

@@ -8,7 +8,7 @@ async function register(user, chat) {
     var success = await users.registerUser(userId, groupId);
     await users.registerGroup(groupId, groupName);
     if (success) {
-        return "Thank you " + userName + " for registering! You have registered the group " + groupName + ".";
+        return "Thank you " + userName + " for registering! You have registered the group " + groupName + "." + " Please /start me privately for additional features.";
     } else {
         return "Sorry but you are already registered in " + groupName + ", " + userName + "!";
     }
