@@ -42,6 +42,11 @@ async function endConversation(user) {
     return result[0];
 }
 
+async function getGroupName(groupId) {
+    var result = await users.findGroupNameByGroupId(groupId);
+    return result[0];
+}
+
 export default {
     findHearnow,
     assignIamhear,
@@ -49,5 +54,6 @@ export default {
     getHearnow,
     isTalking,
     endConversation,
-    getTalking
+    getTalking,
+    getGroupName
 }

@@ -41,6 +41,11 @@ async function findGroupIdNameMappingByGroupIdIn(groupIds) {
     return result;
 }
 
+async function findGroupNameByGroupId(groupId) {
+    var result = await db.query("SELECT GROUP_NAME FROM GROUP_ID_NAME_MAPPING WHERE ID = " + groupId);
+    return result;
+}
+
 async function findUserIdsByGroupId(groupId) {
     var result = await db.query("SELECT ID FROM USER_GROUP_MAPPING WHERE GROUP_ID = " + groupId);
     return result;
@@ -130,5 +135,6 @@ export default {
     deleteGroupIdNameMappingByGroupId,
     deleteUserGroupMappingByGroupId,
     updateGroupIdNameMappingByGroupId,
-    updateUserGroupMappingByGroupId
+    updateUserGroupMappingByGroupId,
+    findGroupNameByGroupId
 };
