@@ -109,13 +109,17 @@ bot.action(/^-?\d+\.?\d*$/, async (ctx) => {
     })
 });
 
-bot.action(constants.CANCEL_HEARNOW, async (ctx) => {
-    ctx.answerCbQuery();
-    if (await hearnow.isHearnow(ctx.callbackQuery.from).catch(err => console.log("Unable to check if the user is currently in hearnow procedure: " + err))) {
-        await hearnow.cancelHearnow(ctx.callbackQuery.from).catch(err => console.log("Unable to cancel hearnow process: " + err));
-        ctx.editMessageText("I have cancelled your hearnow request. Feel free to use my services again 😀!");
-    } else {
-        ctx.reply("You do not have any hearnow request pending right now.");
+bot.command("cancelhearnow", async (ctx) => {
+    let name = ctx.message.from.first_name; 
+    if (ctx.message.chat.type == 'group' || ctx.message.chat.type == "supergroup") {
+        ctx.reply("🙇 Apologies " + name + " but you have to message me privately for this command!");
+    } else if (ctx.message.chat.type == "private") {
+        if (await hearnow.isHearnow(ctx.callbackQuery.from).catch(err => console.log("Unable to check if the user is currently in hearnow procedure: " + err))) {
+            await hearnow.cancelHearnow(ctx.callbackQuery.from).catch(err => console.log("Unable to cancel hearnow process: " + err));
+            ctx.editMessageText("I have cancelled your hearnow request. Feel free to use my services again 😀!");
+        } else {
+            ctx.reply("You do not have any hearnow request pending right now.");
+        }
     }
 })
 
@@ -154,19 +158,23 @@ bot.action(constants.I_AM_AVAILABLE, async (ctx) => {
     }
 })
 
-bot.command("hear", async (ctx) => {
-    let name = ctx.message.from.first_name; 
-    if (ctx.message.chat.type == 'group' || ctx.message.chat.type == "supergroup") {
-        ctx.reply("🙇 Apologies " + name + " but you have to message me privately for this command!");
-    } else if (ctx.message.chat.type == "private") {
-        var iamhearId = await iamhear.getIamhear(ctx.message.from).catch(err => console.log("Unable to get I am hear person: " + err));
-        var hearnowId = await iamhear.getHearnow(ctx.message.from).catch(err => console.log("Unable to get hearnow person: " + err));
-        if (iamhearId.length > 0 || hearnowId.length > 0) {
-            var object  = iamhearId.length > 0 ? iamhearId[0] : hearnowId[0];
-            var id = object.hearnow == ctx.message.from.id ? object.iamhear : object.hearnow;
-            ctx.telegram.sendMessage(id, "🗣️: " + ctx.message.text.split(" ").slice(1).join(" ")).catch(err => console.log("Unable to send message to the recipient for hear function: " + err));
-        } else {
-            ctx.reply("🙏 Sorry but you are not connected to anyone right now. Please use /hearnow to connect with a listening ear.");
+bot.on(['text', 'sticker'], async (ctx) => {
+    if (ctx.message.chat.type == "private") {
+        if (await iamhear.isTalking(ctx.message.from).catch(err => console.log("Unable to check who is talking when sending message " + err))) {
+            var iamhearId = await iamhear.getIamhear(ctx.message.from).catch(err => console.log("Unable to get I am hear person: " + err));
+            var hearnowId = await iamhear.getHearnow(ctx.message.from).catch(err => console.log("Unable to get hearnow person: " + err));
+            if (iamhearId.length > 0 || hearnowId.length > 0) {
+                var object  = iamhearId.length > 0 ? iamhearId[0] : hearnowId[0];
+                var id = object.hearnow == ctx.message.from.id ? object.iamhear : object.hearnow;
+                if (ctx.message.sticker != undefined || ctx.message.sticker != null) {
+                    ctx.telegram.sendSticker(id, ctx.message.sticker.file_id).catch(err => "Unable to send sticker to recipient: " + err)
+                } else {
+                    ctx.telegram.sendMessage(id, ctx.message.text).catch(err => "Unable to send text message to recipient: " + err)
+                }
+            } else {
+                ctx.reply("🙏 Sorry but we have issues connecting you with the other person. Please report this error to @tanamaroby.")
+                .catch(err => "Unable to send error message when cannot find iamhear or hearnow: " + err);
+            }
         }
     }
 });
@@ -185,6 +193,23 @@ bot.command("end", async (ctx) => {
         } else {
             ctx.reply("You are not in a conversation right now ☹️. Feel free to chat using /hearnow to find someone to chat with from your group.");
         }
+    }
+});
+
+bot.command("checkin", async (ctx) => {
+    let name = ctx.message.from.first_name; 
+    if (ctx.message.chat.type == 'group' || ctx.message.chat.type == "supergroup") {
+        var question = "How are you feeling 🤔"
+        var answers = [
+            "😁 Super awesome",
+            "😀 Pretty good",
+            "😐 Okay",
+            "☹️ Somewhat bad",
+            "😔 Really terrible"
+        ]
+        ctx.replyWithPoll(question, answers);
+    } else if (ctx.message.chat.type == "private") {
+        ctx.reply("🙇 Apologies " + name + " but you can only use this command in groups!");
     }
 });
 
@@ -224,23 +249,6 @@ bot.on('left_chat_member', async (ctx) => {
         ctx.reply("I have noted that a member has left the group and I have deleted him from this group's database");
     }
 })
-
-bot.command("checkin", async (ctx) => {
-    let name = ctx.message.from.first_name; 
-    if (ctx.message.chat.type == 'group' || ctx.message.chat.type == "supergroup") {
-        var question = "How are you feeling 🤔"
-        var answers = [
-            "😁 Super awesome",
-            "😀 Pretty good",
-            "😐 Okay",
-            "☹️ Somewhat bad",
-            "😔 Really terrible"
-        ]
-        ctx.replyWithPoll(question, answers);
-    } else if (ctx.message.chat.type == "private") {
-        ctx.reply("🙇 Apologies " + name + " but you can only use this command in groups!");
-    }
-});
 
 bot.catch((err, ctx) => {
     console.log("The bot has encountered an error for " + ctx.updateType, err);
