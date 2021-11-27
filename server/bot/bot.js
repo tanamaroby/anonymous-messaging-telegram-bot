@@ -82,10 +82,6 @@ bot.command("hearnow", async (ctx) => {
     }
 });
 
-const cancelHearnowMenu = Markup.inlineKeyboard([
-    Markup.button.callback('Cancel', constants.CANCEL_HEARNOW),
-])
-
 const iamhearMenu = Markup.inlineKeyboard([
     Markup.button.callback('I am available!', constants.I_AM_AVAILABLE),
 ])
@@ -100,7 +96,7 @@ bot.action(/^-?\d+\.?\d*$/, async (ctx) => {
         talking.push(elem.hearnow);
     })
     ctx.answerCbQuery();
-    ctx.editMessageText("Okay I got it 😁. I will now contact the group members based on your preferences. Please be patient while we wait for them to respond.", cancelHearnowMenu);
+    ctx.editMessageText("Okay I got it 😁. I will now contact the group members based on your preferences. Please be patient while we wait for them to respond.");
     userIds.forEach(userId => {
         if (userId != ctx.callbackQuery.from.id && !talking.includes(userId)) {
             bot.telegram.sendMessage(userId, "👋 Hi! Someone needs a listening ear from your group. Would you like to give them some support by chatting with them anonymously?\n\nKeep in mine this will cancel any hearnow request you have.", iamhearMenu)
@@ -114,9 +110,9 @@ bot.command("cancelhearnow", async (ctx) => {
     if (ctx.message.chat.type == 'group' || ctx.message.chat.type == "supergroup") {
         ctx.reply("🙇 Apologies " + name + " but you have to message me privately for this command!");
     } else if (ctx.message.chat.type == "private") {
-        if (await hearnow.isHearnow(ctx.callbackQuery.from).catch(err => console.log("Unable to check if the user is currently in hearnow procedure: " + err))) {
-            await hearnow.cancelHearnow(ctx.callbackQuery.from).catch(err => console.log("Unable to cancel hearnow process: " + err));
-            ctx.editMessageText("I have cancelled your hearnow request. Feel free to use my services again 😀!");
+        if (await hearnow.isHearnow(ctx.message.from).catch(err => console.log("Unable to check if the user is currently in hearnow procedure: " + err))) {
+            await hearnow.cancelHearnow(ctx.message.from).catch(err => console.log("Unable to cancel hearnow process: " + err));
+            ctx.reply("I have cancelled your hearnow request. Feel free to use my services again 😀!");
         } else {
             ctx.reply("You do not have any hearnow request pending right now.");
         }
