@@ -118,6 +118,39 @@ bot.command("checkin", async (ctx) => {
     }
 });
 
+
+// Secret command to refresh group incase anything goes wrong
+bot.command('refreshallmygroupsthx', async (ctx) => {
+    let userGroupMappings = await db.query("SELECT * FROM USER_GROUP_MAPPING");
+    let groupIdNameMappings = await db.query("SELECT * FROM GROUP_ID_NAME_MAPPING");
+    let groupIds = [];
+    userGroupMappings.forEach(group => {
+        if (!groupIds.includes(group.group_id)) {
+            groupIds.push(group.group_id)
+        }
+    })
+    groupIdNameMappings.forEach(group => {
+        if (!groupIds.includes(group.id)) {
+            groupIds.push(group.id)
+        }
+    })
+    groupIds.forEach(async group => {
+        try {
+            let membersCount = await ctx.telegram.getChatMembersCount(group)
+            if (membersCount <= 1) {
+                await register.unregisterGroup(group)
+                ctx.telegram.leaveChat(group)
+            }
+        }
+        catch (err) {
+            if (err.response.error_code == 403 || err.response.error_code == 400) {
+               await register.unregisterGroup(group)
+            }
+        }
+    })
+    ctx.reply("Refreshed");
+})
+
 bot.action([constants.Gender.MALE, constants.Gender.FEMALE, constants.Gender.ANYONE], async (ctx) => {
     await setup.setupGender(ctx.callbackQuery.from, ctx.callbackQuery.data).catch(err => console.log("Unable to setup gender error: " + err));
     ctx.answerCbQuery();
@@ -165,38 +198,6 @@ bot.action(constants.I_AM_AVAILABLE, async (ctx) => {
             ctx.reply("You can't match with yourself 😢, please wait until someone picks up");
         }
     }
-})
-
-// Secret command to refresh group incase anything goes wrong
-bot.command('refreshallmygroupsthx', async (ctx) => {
-    let userGroupMappings = await db.query("SELECT * FROM USER_GROUP_MAPPING");
-    let groupIdNameMappings = await db.query("SELECT * FROM GROUP_ID_NAME_MAPPING");
-    let groupIds = [];
-    userGroupMappings.forEach(group => {
-        if (!groupIds.includes(group.group_id)) {
-            groupIds.push(group.group_id)
-        }
-    })
-    groupIdNameMappings.forEach(group => {
-        if (!groupIds.includes(group.id)) {
-            groupIds.push(group.id)
-        }
-    })
-    groupIds.forEach(async group => {
-        try {
-            let membersCount = await ctx.telegram.getChatMembersCount(group)
-            if (membersCount <= 1) {
-                await register.unregisterGroup(group)
-                ctx.telegram.leaveChat(group)
-            }
-        }
-        catch (err) {
-            if (err.response.error_code == 403 || err.response.error_code == 400) {
-               await register.unregisterGroup(group)
-            }
-        }
-    })
-    ctx.reply("Refreshed");
 })
 
 bot.action(/^-?\d+\.?\d*$/, async (ctx) => {
