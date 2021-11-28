@@ -151,6 +151,14 @@ bot.command('refreshallmygroupsthx', async (ctx) => {
     ctx.reply("Refreshed");
 })
 
+// const specificMenu = Markup.inlineKeyboard([
+//     [Markup.button.callback('I want to reflect', 'asduaygdisuaydgas')],
+// ])
+
+// bot.command('specific', ctx => {
+//     ctx.reply("Click here to access your profile in Wakabu Web https://www.wakabu.net/id?q=mavera.\n\nCurrently, here are the reminders that you have:\n1. Nature tour at McRitchie at 6.00pm\n2. Supper with friends at 10.00pm", specificMenu)
+// })
+
 bot.action([constants.Gender.MALE, constants.Gender.FEMALE, constants.Gender.ANYONE], async (ctx) => {
     await setup.setupGender(ctx.callbackQuery.from, ctx.callbackQuery.data).catch(err => console.log("Unable to setup gender error: " + err));
     ctx.answerCbQuery();
