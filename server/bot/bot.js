@@ -90,7 +90,7 @@ bot.command("end", async (ctx) => {
     } else if (ctx.message.chat.type == "private") {
         if (await iamhear.isTalking(ctx.message.from).catch(err => console.log("Unable to check who is talking for end function: " + err))) {
             var result = await iamhear.endConversation(ctx.message.from).catch(err => console.log("Unable to end conversation: " + err));
-            ctx.telegram.sendMessage(result.hearnow, "The conversation has ended. I hope that the experience has been positive for you.")
+            ctx.telegram.sendMessage(result.hearnow, "The conversation has ended. Feel free to use /hearnow again to chat with someone whenever you need it.")
             .catch(err => console.log("Unable to send message to hearnow recipient for ending conversation: " + err));
             ctx.telegram.sendMessage(result.iamhear, "The conversation has ended. Thank you for giving a listening ear.")
             .catch(err => console.log("Unable to send message to iamhear recipient for ending conversation: " + err));
