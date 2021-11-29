@@ -8,7 +8,6 @@ import register from "./command/register";
 import setup from "./command/setup";
 import hearnow from "./command/hearnow";
 import iamhear from './command/iamhear';
-import db from '../services/db';
 
 // Bot buttons
 const genderMenu = Markup.inlineKeyboard([
@@ -117,47 +116,6 @@ bot.command("checkin", async (ctx) => {
         ctx.reply("🙇 Apologies " + name + " but you can only use this command in groups!");
     }
 });
-
-
-// Secret command to refresh group incase anything goes wrong
-bot.command('refreshallmygroupsthx', async (ctx) => {
-    let userGroupMappings = await db.query("SELECT * FROM USER_GROUP_MAPPING");
-    let groupIdNameMappings = await db.query("SELECT * FROM GROUP_ID_NAME_MAPPING");
-    let groupIds = [];
-    userGroupMappings.forEach(group => {
-        if (!groupIds.includes(group.group_id)) {
-            groupIds.push(group.group_id)
-        }
-    })
-    groupIdNameMappings.forEach(group => {
-        if (!groupIds.includes(group.id)) {
-            groupIds.push(group.id)
-        }
-    })
-    groupIds.forEach(async group => {
-        try {
-            let membersCount = await ctx.telegram.getChatMembersCount(group)
-            if (membersCount <= 1) {
-                await register.unregisterGroup(group)
-                ctx.telegram.leaveChat(group)
-            }
-        }
-        catch (err) {
-            if (err.response.error_code == 403 || err.response.error_code == 400) {
-               await register.unregisterGroup(group)
-            }
-        }
-    })
-    ctx.reply("Refreshed");
-})
-
-// const specificMenu = Markup.inlineKeyboard([
-//     [Markup.button.callback('I want to reflect', 'asduaygdisuaydgas')],
-// ])
-
-// bot.command('specific', ctx => {
-//     ctx.reply("Click here to access your profile in Wakabu Web https://www.wakabu.net/id?q=mavera.\n\nCurrently, here are the reminders that you have:\n1. Nature tour at McRitchie at 6.00pm\n2. Supper with friends at 10.00pm", specificMenu)
-// })
 
 bot.action([constants.Gender.MALE, constants.Gender.FEMALE, constants.Gender.ANYONE], async (ctx) => {
     await setup.setupGender(ctx.callbackQuery.from, ctx.callbackQuery.data).catch(err => console.log("Unable to setup gender error: " + err));
@@ -302,7 +260,12 @@ bot.catch((err, ctx) => {
     console.log("The bot has encountered an error for " + ctx.updateType, err);
 });
 
-bot.launch();
+bot.launch({
+    webhook: {
+        domain: 'https://whispering-plateau-19340.herokuapp.com/',
+        port: 8443
+    }
+});
 
 process.once('SIGINT', () => bot.stop('SIGINT'))
 process.once('SIGTERM', () => bot.stop('SIGTERM'))
