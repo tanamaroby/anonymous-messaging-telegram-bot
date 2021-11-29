@@ -11,7 +11,7 @@ import logger from 'morgan';
 // Class files
 import indexRouter from './routes/index';
 
-const url = "https://whispering-plateau-19340.herokuapp.com/";
+const url = "https://wakabubot.herokuapp.com/";
 //const url = 'http://localhost:3000';
 
 const app = express();
