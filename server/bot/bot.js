@@ -28,7 +28,7 @@ const iamhearMenu = Markup.inlineKeyboard([
 
 // Bot commands
 export const bot = new Telegraf(process.env.BOT_TOKEN);
-bot.start((ctx) => ctx.telegram.sendMessage(ctx.message.from.id, start));
+bot.start((ctx) => bot.telegram.sendMessage(ctx.message.from.id, start));
 bot.help((ctx) => ctx.telegram.sendMessage(ctx.message.from.id, help));
 bot.command('hellobot', async (ctx) => {
     let name = ctx.message.from.first_name; 
