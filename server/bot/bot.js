@@ -28,15 +28,15 @@ const iamhearMenu = Markup.inlineKeyboard([
 
 // Bot commands
 export const bot = new Telegraf(process.env.BOT_TOKEN);
-bot.start((ctx) => ctx.reply(ctx.message.from.id, start));
-bot.help((ctx) => ctx.reply(ctx.message.from.id, help));
+bot.start((ctx) => ctx.reply(start));
+bot.help((ctx) => ctx.reply(help));
 bot.command('hellobot', async (ctx) => {
     let name = ctx.message.from.first_name; 
     if (ctx.message.chat.type == 'group' || ctx.message.chat.type == "supergroup") {
         const response = await register.register(ctx.message.from, ctx.message.chat).catch(err => console.log("Unable to register user error: " + err));
-        ctx.reply(ctx.message.from.id, response);
+        ctx.reply(response);
     } else if (ctx.message.chat.type == "private") {
-        ctx.reply(ctx.message.from.id, "🙇 Apologies " + name + " but you can only use this command in groups!");
+        ctx.reply("🙇 Apologies " + name + " but you can only use this command in groups!");
     }
 });
 
