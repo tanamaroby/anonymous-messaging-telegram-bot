@@ -103,15 +103,23 @@ bot.command("end", async (ctx) => {
 bot.command("checkin", async (ctx) => {
     let name = ctx.message.from.first_name; 
     if (ctx.message.chat.type == 'group' || ctx.message.chat.type == "supergroup") {
-        var question = "How are you feeling?"
-        var answers = [
+        var question1 = "How are you feeling?"
+        var question2 = "Has your mood disrupted your school work or leisure time in the past 2 days?"
+        var answers1 = [
             "😁 Super awesome",
             "😀 Pretty good",
             "😐 Okay",
             "☹️ Somewhat bad",
             "😔 Really terrible"
         ]
-        ctx.replyWithPoll(question, answers);
+        var answers2 = [
+            "😀 Not at all",
+            "😐 Mildly",
+            "☹️ Moderately",
+            "😔 Extremely"
+        ]
+        ctx.replyWithPoll(question1, answers1);
+        ctx.replyWithPoll(question2, answers2)
     } else if (ctx.message.chat.type == "private") {
         ctx.reply("🙇 Apologies " + name + " but you can only use this command in groups!");
     }
