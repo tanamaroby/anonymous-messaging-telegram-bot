@@ -126,7 +126,7 @@ bot.command("checkin", async (ctx) => {
 });
 
 bot.command('crisis', async ctx => {
-    if (await iamhear.isTalking(ctx.callbackQuery.from).catch(err => console.log("Unable to find who is talking for crisis command"))) {
+    if (await iamhear.isTalking(ctx.message.from).catch(err => console.log("Unable to find who is talking for crisis command"))) {
         var iamhearId = await iamhear.getIamhear(ctx.message.from).catch(err => console.log("Unable to get I am hear person: " + err));
         var hearnowId = await iamhear.getHearnow(ctx.message.from).catch(err => console.log("Unable to get hearnow person: " + err));
         if (iamhearId.length > 0 || hearnowId.length > 0) {
