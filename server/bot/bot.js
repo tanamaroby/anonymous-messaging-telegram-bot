@@ -125,6 +125,26 @@ bot.command("checkin", async (ctx) => {
     }
 });
 
+bot.command('crisis', async ctx => {
+    if (await iamhear.isTalking(ctx.callbackQuery.from).catch(err => console.log("Unable to find who is talking for crisis command"))) {
+        var iamhearId = await iamhear.getIamhear(ctx.message.from).catch(err => console.log("Unable to get I am hear person: " + err));
+        var hearnowId = await iamhear.getHearnow(ctx.message.from).catch(err => console.log("Unable to get hearnow person: " + err));
+        if (iamhearId.length > 0 || hearnowId.length > 0) {
+            var object  = iamhearId.length > 0 ? iamhearId[0] : hearnowId[0];
+            var recipient = object.hearnow == ctx.message.from.id ? object.iamhear : object.hearnow;
+            var sender = object.hearnow == ctx.message.from.id ? object.hearnow : object.iamhear;
+            var text = 'If you are worried about your safety. Please reach out to:\n\nSOS hotline 24hr 1767\n\nSOS chat  https://www.sos.org.sg/contact-us\n\nIMH Crisis hotline 63892222'
+            ctx.telegram.sendMessage(recipient, text).catch(err => "Unable to send text message to recipient: " + err)
+            ctx.telegram.sendMessage(sender, `I have sent the following information to the other person\n\n${text}`).catch(err => `Unable to send text message to sender: ${err}`)
+        } else {
+            ctx.reply("🙏 Sorry but we have issues connecting you with the other person. Please report this error to @tanamaroby.")
+            .catch(err => "Unable to send error message when cannot find iamhear or hearnow: " + err);
+        }
+    } else {
+        ctx.reply(text)
+    }
+})
+
 bot.action([constants.Gender.MALE, constants.Gender.FEMALE, constants.Gender.ANYONE], async (ctx) => {
     await setup.setupGender(ctx.callbackQuery.from, ctx.callbackQuery.data).catch(err => console.log("Unable to setup gender error: " + err));
     ctx.answerCbQuery();
