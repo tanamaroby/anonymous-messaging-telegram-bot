@@ -126,7 +126,7 @@ bot.command("checkin", async (ctx) => {
 });
 
 bot.command('crisis', async ctx => {
-    var text = 'If you are worried about your safety. Please reach out to:\n\nSOS hotline 24hr 1767\n\nSOS chat  https://www.sos.org.sg/contact-us\n\nIMH Crisis hotline 63892222'
+    var text = 'If you are worried about your safety. Please reach out to:\n\nSOS hotline 24hr 62214444\n\nSOS chat  https://www.sos.org.sg/contact-us\n\nIMH Crisis hotline 63892222'
     if (await iamhear.isTalking(ctx.message.from).catch(err => console.log("Unable to find who is talking for crisis command"))) {
         var iamhearId = await iamhear.getIamhear(ctx.message.from).catch(err => console.log("Unable to get I am hear person: " + err));
         var hearnowId = await iamhear.getHearnow(ctx.message.from).catch(err => console.log("Unable to get hearnow person: " + err));
