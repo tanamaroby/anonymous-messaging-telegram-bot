@@ -126,6 +126,7 @@ bot.command("checkin", async (ctx) => {
 });
 
 bot.command('crisis', async ctx => {
+    var text = 'If you are worried about your safety. Please reach out to:\n\nSOS hotline 24hr 1767\n\nSOS chat  https://www.sos.org.sg/contact-us\n\nIMH Crisis hotline 63892222'
     if (await iamhear.isTalking(ctx.message.from).catch(err => console.log("Unable to find who is talking for crisis command"))) {
         var iamhearId = await iamhear.getIamhear(ctx.message.from).catch(err => console.log("Unable to get I am hear person: " + err));
         var hearnowId = await iamhear.getHearnow(ctx.message.from).catch(err => console.log("Unable to get hearnow person: " + err));
@@ -133,7 +134,6 @@ bot.command('crisis', async ctx => {
             var object  = iamhearId.length > 0 ? iamhearId[0] : hearnowId[0];
             var recipient = object.hearnow == ctx.message.from.id ? object.iamhear : object.hearnow;
             var sender = object.hearnow == ctx.message.from.id ? object.hearnow : object.iamhear;
-            var text = 'If you are worried about your safety. Please reach out to:\n\nSOS hotline 24hr 1767\n\nSOS chat  https://www.sos.org.sg/contact-us\n\nIMH Crisis hotline 63892222'
             ctx.telegram.sendMessage(recipient, text).catch(err => "Unable to send text message to recipient: " + err)
             ctx.telegram.sendMessage(sender, `I have sent the following information to the other person\n\n${text}`).catch(err => `Unable to send text message to sender: ${err}`)
         } else {
