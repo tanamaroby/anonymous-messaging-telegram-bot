@@ -1,7 +1,7 @@
 // Important imports
 import "core-js/stable";
 import "regenerator-runtime/runtime";
-import "./loadEnv";
+import "./load-env";
 import "./bot/bot";
 import axios from 'axios';
 
