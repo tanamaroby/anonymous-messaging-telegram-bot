@@ -32,7 +32,7 @@ export default async function iamhear(bot) {
             } else {
                 let hearnowRecipient = null;
                 for (let i = 0; i < hearnowRequests.length; i ++) {
-                    if (ctx.callbackQuery.from.id != hearnow[i].hearnow) {
+                    if (ctx.callbackQuery.from.id != hearnowRequests[i].hearnow) {
                         hearnowRecipient = hearnowRequests[i].hearnow;
                         break;
                     }
